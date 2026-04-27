@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(90deg, #0f2027, #203a43);
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    width: 900px;
+    display: flex;
+    background: #eee;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.left {
+    width: 40%;
+    background: #021c2b;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.left h2 {
+    margin-bottom: 20px;
+}
+
+.right {
+    width: 60%;
+    padding: 40px;
+}
+
+h1 {
+    color: #1c6ea4;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+button {
+    background: #c2185b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<div class="box">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+        <h2>Gayaz Ahmad</h2>
+        <p>Welcome Back 👋</p>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+        <h1>LOGIN HERE</h1>
+
+<!--        &lt;!&ndash; Flash Messages (SAFE VERSION) &ndash;&gt;-->
+<!--        {% with messages = get_flashed_messages(with_categories=true) %}-->
+<!--          {% if messages %}-->
+<!--            {% for category, message in messages %}-->
+<!--              <script>-->
+<!--                alert("{{ message }}");-->
+<!--              </script>-->
+<!--            {% endfor %}-->
+<!--          {% endif %}-->
+<!--        {% endwith %}-->
+
+        <form method="POST">
+
+            <label>Email Address</label>
+            <input type="email" name="email" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required>
+
+            <div class="links">
+                <a href="/register">Register new Account?</a>
+                <a href="/forget">Forget Password?</a>
+            </div>
+
+            <button type="submit">Login</button>
+
+        </form>
+    </div>
+
+</div>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+
+if(urlParams.get("expired") === "1"){
+    alert("⚠️ Session expired! Please login again.");
+}
+</script>
+
+</body>
+</html>

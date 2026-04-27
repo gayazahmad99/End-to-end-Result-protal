@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Forget Password</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.box {
+    background: #fff;
+    padding: 40px;
+    width: 400px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+h1 {
+    color: red;
+    margin-bottom: 30px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: green;
+    color: white;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    margin-top: 15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<div class="box">
+
+    <h1>Forget Password</h1>
+
+    <!-- Flash Messages (FIXED SAFE VERSION) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <script>alert("{{ message }}");</script>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <input type="email" name="email" placeholder="Enter Email" required>
+
+        <!-- FIX: must match backend field name -->
+        <select name="security_question" required>
+            <option value="">Select Security Question</option>
+            <option value="pet">What is your pet name?</option>
+            <option value="birth">Your birth place?</option>
+        </select>
+
+        <input type="text" name="answer" placeholder="Answer" required>
+
+        <input type="password" name="new_password" placeholder="New Password" required>
+
+        <button type="submit">Reset Password</button>
+
+    </form>
+
+</div>
+</div>
+
+</body>
+</html>

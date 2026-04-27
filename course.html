@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { background:#f4f6f9; }
+
+        .dashboard-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #0d6efd;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            z-index: 999;
+        }
+
+        .dashboard-btn:hover {
+            background: black;
+            transform: scale(1.1);
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<a href="/dashboard" class="dashboard-btn">🏠</a>
+
+<form id="deleteForm" method="POST"></form>
+
+<div class="container mt-4">
+
+    <div class="text-center mb-3 p-2 text-white" style="background:#0d6efd;">
+        <h4 class="mb-0">Manage Course Details</h4>
+    </div>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="auto-hide-msg alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+
+        <!-- FORM -->
+        <div class="col-md-5">
+            <div class="card shadow" style="border:3px solid #0d6efd;">
+                <div class="card-body">
+
+                    <form method="POST" action="/course">
+
+                        <input type="hidden" name="id" id="course_id">
+
+                        <div class="mb-2">
+                            <label>Course Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label>Duration</label>
+                            <input type="text" name="duration" class="form-control" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label>Charges</label>
+                            <input type="number" name="charges" class="form-control" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control" style="height:100px;"></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <button type="submit" class="btn text-white" style="background:#0d6efd; width:23%;">Save</button>
+
+                            <button type="button" onclick="updateCourse()" class="btn text-white" style="background:#198754; width:23%;">Update</button>
+
+                            <button type="button" onclick="deleteCourse()" class="btn text-white" style="background:#dc3545; width:23%;">Delete</button>
+
+                            <button type="reset" class="btn text-white" style="background:#6c757d; width:23%;">Clear</button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="col-md-7">
+
+            <form method="GET" class="d-flex mb-3">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search Course">
+                <button class="btn btn-primary">Search</button>
+            </form>
+
+            <div class="card shadow">
+                <div class="card-body p-0 table-container">
+
+                    <table id="courseTable" class="table table-bordered text-center">
+
+                        <thead class="table-dark sticky-top">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Duration</th>
+                                <th>Charges</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% if courses %}
+                            {% for course in courses %}
+                            <tr onclick='selectRow(this, {{ course.id }}, `{{ course.name }}`, `{{ course.duration }}`, {{ course.charges }}, `{{ course.description }}`)'>
+                                <td>{{ course.id }}</td>
+                                <td>{{ course.name }}</td>
+                                <td>{{ course.duration }}</td>
+                                <td>{{ course.charges }}</td>
+                                <td>{{ course.description }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-danger">No Data Found</td>
+                        </tr>
+                        {% endif %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- AUTO HIDE MESSAGES -->
+<script>
+setTimeout(function(){
+    document.querySelectorAll('.auto-hide-msg').forEach(msg => {
+        msg.style.opacity = "0";
+        setTimeout(() => msg.remove(), 500);
+    });
+}, 3000);
+</script>
+
+<!-- TABLE SELECT SCRIPT -->
+<script>
+function selectRow(row, id, name, duration, charges, description){
+    document.querySelectorAll("#courseTable tbody tr").forEach(r => {
+        r.classList.remove("table-primary");
+    });
+
+    row.classList.add("table-primary");
+
+    document.getElementById("course_id").value = id;
+    document.querySelector("input[name='name']").value = name;
+    document.querySelector("input[name='duration']").value = duration;
+    document.querySelector("input[name='charges']").value = charges;
+    document.querySelector("textarea[name='description']").value = description;
+}
+
+function updateCourse(){
+    let id = document.getElementById('course_id').value;
+
+    if(id){
+        document.querySelector('form[action="/course"]').submit();
+    } else {
+        alert("Select course first to update");
+    }
+}
+
+function deleteCourse(){
+    let id = document.getElementById('course_id').value;
+
+    if(id){
+        if(confirm("Delete this course?")){
+            let form = document.getElementById("deleteForm");
+            form.action = "/delete_course/" + id;
+            form.submit();
+        }
+    } else {
+        alert("Select course first");
+    }
+}
+</script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

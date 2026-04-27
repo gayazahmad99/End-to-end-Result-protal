@@ -1,0 +1,9 @@
+Flask
+psycopg2-binary
+Werkzeug
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-JWT-Extended
+psycopg2-binary
+python-dotenv
+gunicorn
